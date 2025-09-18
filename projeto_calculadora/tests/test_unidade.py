@@ -130,11 +130,15 @@ def test_consistencia_historico ( self ):
 # Objetivo: Garantir que a estrutura é inicializada corretamente.
 def test_inicializacao ( self ):
     calc = Calculadora ()
+    # * Sugestão de melhoria: Garantir que a estrutura é inicializada corretamente.
     try :
         self . assertEqual ( calc . resultado , 0)
         self . assertEqual (len ( calc . historico ), 0)
     except ValueError as e:
         self . assertEqual (str (e), "Erro na inicialização da calculadora")  
+         # * Ajuste para não ter interferencia de outros testes
+            calc.limpar_historico()
+    
 
 
 ###################################################################################
