@@ -40,6 +40,10 @@ def test_entrada_saida_potencia ( self ):
   self . assertEqual ( resultado , 2.5)
   self . assertEqual ( calc . obter_ultimo_resultado () , 2.5)
 
+###################################################################################
+###################################################################################
+###################################################################################
+
 # 3.2 Testes de Tipagem
 def test_tipagem_invalida ( self ):
     calc = Calculadora()
@@ -94,23 +98,48 @@ def test_tipagem_invalida ( self ):
     with self.assertRaises(TypeError):
         calc.potencia("3", "3")
 
+###################################################################################
+###################################################################################
+###################################################################################
+
 # 3.3 Testes de Consistência
 # Objetivo: Verificar se os dados permanecem consistentes apos operações.
 
 def test_consistencia_historico ( self ):
     calc = Calculadora ()
-    calc . somar (2, 3)
-    calc . multiplicar (4, 5)
-    self . assertEqual (len ( calc . historico ), 2)
-    self . assertIn ("2 + 3 = 5", calc . historico )
-    self . assertIn ("4 * 5 = 20", calc . historico )
+    calc.somar (2, 3)
+    calc.multiplicar (4, 5)
+    # * Sugestão de melhoria: Verificar se os dados permanecem consistentes apos operações.
+    calc.subtrair(10,9)
+    calc.dividir(10,2)
+    calc.potencia(2,2)
+
+    #self . assertEqual (len ( calc . historico ), 2)
+    self . assertEqual (len ( calc . historico ), 5)
+    self . assertIn ("2 + 3 = 5", calc.historico )
+    self . assertIn ("4 * 5 = 20", calc.historico )
+    self . assertIn ("10 - 9 = 1", calc.historico )
+    self . assertIn ("10 / 2 = 5", calc.historico )
+    self . assertIn ("2 ** 2 = 4", calc.historico )
+
+###################################################################################
+###################################################################################
+###################################################################################
 
 # 3.4 Testes de Inicialização
 # Objetivo: Garantir que a estrutura é inicializada corretamente.
 def test_inicializacao ( self ):
     calc = Calculadora ()
-    self . assertEqual ( calc . resultado , 0)
-    self . assertEqual (len ( calc . historico ), 0)
+    try :
+        self . assertEqual ( calc . resultado , 0)
+        self . assertEqual (len ( calc . historico ), 0)
+    except ValueError as e:
+        self . assertEqual (str (e), "Erro na inicialização da calculadora")  
+
+
+###################################################################################
+###################################################################################
+###################################################################################
 
 #3.5 Testes de Modificação de Dados
 #Objetivo: Verificar se modificações são aplicadas corretamente.
@@ -121,16 +150,44 @@ def test_modificacao_historico ( self ):
     calc . limpar_historico ()
     self . assertEqual (len ( calc . historico ), 0)
 
+    # * Sugestão de melhoria: Verificar se modificações são aplicadas corretamente.
+    calc.subtrair(7, 3)  # Realiza a operação soma
+    calc.potencia(2, 2)  # Realiza outra operação
+    calc.dividir(2, 2)  # Realiza outra operação
+    self.assertEqual(len(calc.historico), 3)  # Verifica se o histórico tem 3 operações
+
+    calc.limpar_historico()  # Limpa o histórico
+    self.assertEqual(len(calc.historico), 0)  # Verifica se o histórico está limpo
+
+    
+
+###################################################################################
+###################################################################################
+###################################################################################
+
 #3.6 Testes de Limite Inferior
 #Objetivo: Testar comportamento com valores mínimos.
 def test_limite_inferior ( self ):
-  calc = Calculadora ()
-  # Teste com zero
-  resultado = calc . somar (0, 5)
-  self . assertEqual ( resultado , 5)
-  # Teste com numeros negativos muito pequenos
-  resultado = calc . multiplicar (-1e-10 , 2)
-  self . assertEqual ( resultado , -2e-10)
+    calc = Calculadora ()
+    # Teste com zero
+    resultado = calc . somar (0, 5)
+    self . assertEqual ( resultado , 5)
+    # Teste com numeros negativos muito pequenos
+    resultado = calc . multiplicar (-1e-10 , 2)
+    self . assertEqual ( resultado , -2e-10)
+
+ # * Sugestão de melhoria: Verificar se modificações são aplicadas corretamente.
+
+    resultado = calc.dividir(-1e-100, -1e-100)  # Espera-se que a divisão seja 1
+    self.assertEqual(resultado, 1.0)
+    
+    resultado = calc.potencia(-1e-100, 2)  # Espera-se que o resultado seja 1e-200
+    self.assertEqual(resultado, 1e-200)
+
+
+###################################################################################
+###################################################################################
+###################################################################################
 
 #3.7 Testes de Limite Superior
 #Objetivo: Testar comportamento com valores máximos.
@@ -140,6 +197,7 @@ def test_limite_superior ( self ):
     resultado = calc . somar (1e10 , 1e10)
     self . assertEqual ( resultado , 2e10)
 
+    # * Sugestão de melhoria: Verificar se modificações são aplicadas corretamente.
     # Teste com valores próximos ao limite máximo de float do Python
     max_float = sys.float_info.max
 
@@ -156,6 +214,9 @@ def test_limite_superior ( self ):
     resultado = calc.dividir(max_float, 1)
     self.assertEqual(resultado, max_float)
 
+###################################################################################
+###################################################################################
+###################################################################################
 
 #3.8 Testes de Valores Fora do Intervalo
 #Objetivo: Verificar comportamento com valores inválidos.
@@ -164,6 +225,15 @@ def test_divisao_por_zero ( self ):
     with self . assertRaises ( ValueError ):
         calc . dividir (10 , 0)
 
+    # * Sugestão de melhoria: Verificar se modificações são aplicadas corretamente.
+    with self.assertRaises(ValueError):  # Aqui esperamos um erro ao tentar dividir por número muito pequeno
+        calc.dividir(10, 1e-100)  # Tentando dividir por número extremamente pequeno
+    
+
+###################################################################################
+###################################################################################
+###################################################################################
+
 #3.9 Testes de Fluxos de Controle
 #Objetivo: Testar diferentes caminhos do código.
 def test_fluxos_divisao ( self ):
@@ -171,10 +241,23 @@ def test_fluxos_divisao ( self ):
     # Caminho normal
     resultado = calc . dividir (10 , 2)
     self . assertEqual ( resultado , 5)
+
+    # * Sugestão de melhoria: Verificar se modificações são aplicadas corretamente.
+    # Caminho normal com números negativos
+    resultado = calc.dividir(-10, -2)
+    self.assertEqual(resultado, 5)  # Resultado esperado é 5
+
+    # Caminho normal com um número negativo
+    resultado = calc.dividir(10, -2)
+    self.assertEqual(resultado, -5)  # Resultado esperado é -5
+
     # Caminho de erro
     with self . assertRaises ( ValueError ):
         calc . dividir (10 , 0)
     
+###################################################################################
+###################################################################################
+###################################################################################
 
 #3.10 Testes de Mensagens de Erro
 #Objetivo: Verificar se mensagens de erro são claras.
@@ -183,4 +266,10 @@ def test_mensagens_erro ( self ):
     try :
         calc . dividir (5, 0)
     except ValueError as e:
-        self . assertEqual (str (e), " Divisao por zero nao permitida ")    
+        self . assertEqual (str (e), " Divisao por zero não é permitida ")    
+    
+    # * Sugestão de melhoria: Verificar se modificações são aplicadas corretamente.
+    try:
+        calc.dividir(10, 1e-100)  # Divisão por número muito pequeno
+    except ValueError as e:
+        self.assertEqual(str(e), "Divisao por numero próximos a 0 não é permitida")
