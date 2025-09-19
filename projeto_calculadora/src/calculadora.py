@@ -33,11 +33,25 @@ class Calculadora :
     def dividir ( self , a, b):
         if not isinstance (a, (int , float )) or not isinstance (b, (int , float )):
             raise TypeError (" Argumentos devem ser numeros ")
+        
+        # Verificação de zero ou valores extremamente pequenos
         if b == 0:
-            raise ValueError (" Divisao por zero nao permitida ")
+            raise ValueError("Divisão por zero não é permitida")
+        if abs(b) < 1e-300:  
+        # Ajuste: evita divisões por números muito próximos de zero
+        # Evita resultados numéricos extremamente grandes que podem causar overflo
+            raise ValueError("Divisão por zero não é permitida")
+
         resultado = a / b
-        self . historico . append (f"{a} / {b} = { resultado }")
-        self . resultado = resultado
+
+        # Ajuste: se o resultado for inteiro (ex: 5.0), converte para int
+        if resultado.is_integer():
+            resultado_formatado = int(resultado)
+        else:
+            resultado_formatado = resultado
+
+        self.historico.append(f"{a} / {b} = {resultado_formatado}")
+        self.resultado = resultado
         return resultado
 
     def potencia ( self , base , expoente ):
