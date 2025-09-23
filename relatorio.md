@@ -65,8 +65,21 @@ A cobertura total do projeto é de **98%**.
 
 ## 3. Problemas Encontrados
 
-Durante a execução dos testes **não foram encontrados problemas**.
-Todos os testes passaram e a cobertura de código está alta, garantindo boa confiabilidade do software.
+Durante a execução do switch de testes na calculadora, foram identificados pontos de falha e risco na função de divisão. Para garantir que a função atendesse a todos os casos de teste (normais e excepcionais), os seguintes ajustes foram realizados:
+
+### Validação de zero e valores extremamente pequenos no divisor
+
+Antes: não havia tratamento específico para divisões por zero ou por números muito próximos de zero.
+
+Ajuste: incluída verificação para lançar exceção (ValueError) quando b == 0 ou abs(b) < 1e-300.
+
+Justificativa: atende ao caso de teste de “divisão por zero” e previne estouros numéricos (overflow) em divisões por valores muito próximos de zero.
+
+### Formatação do resultado
+
+Antes: resultados inteiros eram apresentados como número decimal (exemplo: 5.0).
+
+Ajuste: adicionado tratamento para converter automaticamente resultados inteiros em int (exemplo: 5.0 → 5).
 
 ---
 
@@ -79,5 +92,6 @@ O software testado apresenta:
 * Nenhum erro crítico ou falha detectada.
 
 O sistema pode ser considerado **estável e confiável** com base nos testes realizados.
+
 
 
