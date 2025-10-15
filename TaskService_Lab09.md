@@ -17,9 +17,10 @@ Projeto simples para gerenciar tarefas com prioridades, status e validações. I
 
 ## 🚀 Como executar
 
-### 1. Criar ambiente virtual
+
 
 ```bash
+### 1. Criar ambiente virtual
 python -m venv venv
 
 .\venv\Scripts\activate
