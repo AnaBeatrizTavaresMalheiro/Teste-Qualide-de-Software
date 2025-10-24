@@ -62,10 +62,13 @@ pytest exercicio03/tests/test_todos_crud.py -v
 ```bash
 pytest pytest exercicio04/tests/ -v 
 ```
-![alt text](image-2.png)
+![alt text](image-3.png)
 
 ## Exercício 5
 ```bash
-pytest exercicio05/tests/test_todos_crud.py -v
+pytest exercicio05/tests/ -v
 ```
-![alt text](image-2.png)
+![alt text](image-4.png)
+
+Alguns testes foram impactados pois o navegador Chrome bloqueia, solicitando autenticação de que não é um robo
+

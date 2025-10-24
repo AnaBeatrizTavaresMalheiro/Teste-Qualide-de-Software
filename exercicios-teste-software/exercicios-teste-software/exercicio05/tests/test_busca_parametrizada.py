@@ -1,8 +1,20 @@
 import pytest
-import time
+from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-# ---------- Parte C: Busca Parametrizada ----------
+CHROMEDRIVER_PATH = r"C:/Users/GUILHERME MALHEIRO/Downloads/chromedriver-win64/chromedriver-win64/chromedriver.exe"
+
+@pytest.fixture
+def chrome_driver():
+    options = webdriver.ChromeOptions()
+    options.add_argument("--start-maximized")
+    driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, options=options)
+    yield driver
+    driver.quit()
+
+# ---------- Parte C: Busca Parametrizada (Bing) ----------
 
 @pytest.mark.parametrize("termo_busca", [
     "Python",
@@ -11,23 +23,22 @@ from selenium.webdriver.common.by import By
     "API Testing",
     "Automation"
 ])
-def test_busca_google(chrome_driver, termo_busca):
+def test_busca_bing(chrome_driver, termo_busca):
     driver = chrome_driver
-    driver.get("https://www.google.com")
+    driver.get("https://www.bing.com")
 
-    # Aceitar cookies se aparecer (opcional)
-    try:
-        aceitar = driver.find_element(By.ID, "L2AGLb")
-        aceitar.click()
-        time.sleep(1)
-    except:
-        pass
-
-    search_box = driver.find_element(By.NAME, "q")
+    # Localizar a barra de pesquisa
+    search_box = WebDriverWait(driver, 5).until(
+        EC.presence_of_element_located((By.NAME, "q"))
+    )
+    search_box.clear()
     search_box.send_keys(termo_busca)
     search_box.submit()
 
     # Aguardar resultados carregarem
-    time.sleep(2)
+    WebDriverWait(driver, 5).until(
+        EC.presence_of_element_located((By.ID, "b_content"))
+    )
 
+    # Verificar se o termo de busca aparece na página
     assert termo_busca.lower() in driver.page_source.lower()

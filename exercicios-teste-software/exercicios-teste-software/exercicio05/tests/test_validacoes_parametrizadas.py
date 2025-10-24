@@ -20,7 +20,8 @@ def test_validacao_email_api(email_invalido):
         "email": email_invalido,
         "password": "senha123"
     })
-    assert response.status_code == 400
+    # A API Reqres retorna 400 se faltar campo, 401 se credencial inválida
+    assert response.status_code in [400, 401]
 
 
 # ---------- Parte B: Validação de Senhas ----------
@@ -39,4 +40,4 @@ def test_validacao_senha_api(senha, motivo):
         "email": "test@test.com",
         "password": senha
     })
-    assert response.status_code == 400
+    assert response.status_code in [400, 401]
